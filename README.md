@@ -26,14 +26,9 @@ cp .env.example .env
 
 - `DATABASE_PATH` — varsayılan `./data/cofengo.db`, değiştirmenize gerek yok.
 - `ADMIN_USERNAME` — admin paneline giriş için kullanıcı adı.
-- `ADMIN_PASSWORD_HASH` — aşağıdaki komutla üretin:
-
-  ```bash
-  node scripts/hash-password.mjs "sifreniz"
-  ```
-
-  Çıktıyı `ADMIN_PASSWORD_HASH` değişkenine yapıştırın.
-
+- `ADMIN_PASSWORD` — admin paneline giriş için düz metin şifre. `$` gibi özel
+  karakterler bazı deploy platformlarında (Coolify dahil) sorun çıkarabildiği
+  için basit, alfanumerik bir şifre kullanmanızı öneririz.
 - `SESSION_SECRET` — en az 16 karakter, rastgele bir metin (örn. `openssl rand -hex 32` ile üretebilirsiniz).
 
 Örnek menü/etkinlik verisiyle başlamak isterseniz:
@@ -86,7 +81,7 @@ Coolify'da uygulamanın **Environment Variables** sekmesinden ekleyin:
 ```
 DATABASE_PATH=/app/data/cofengo.db
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD_HASH=<hash-degeriniz>
+ADMIN_PASSWORD=<sifreniz>
 SESSION_SECRET=<uzun-rastgele-deger>
 NODE_ENV=production
 ```
@@ -130,6 +125,5 @@ src/
   components/     → Header, Footer, admin panel bileşenleri
   lib/            → veritabanı erişimi (data.ts), auth (auth.ts), dosya yükleme (uploads.ts)
 scripts/
-  hash-password.mjs → admin şifresi için bcrypt hash üretir
   seed.mjs          → örnek menü/etkinlik verisi ekler
 ```
