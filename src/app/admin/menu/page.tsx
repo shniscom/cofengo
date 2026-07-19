@@ -1,4 +1,6 @@
 import AdminShell from "@/components/admin/AdminShell";
+import EditModal from "@/components/admin/EditModal";
+import ImageCropField from "@/components/admin/ImageCropField";
 import { getMenuWithItems } from "@/lib/data";
 import {
   createCategoryAction,
@@ -44,28 +46,19 @@ export default async function AdminMenuPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-display text-lg font-bold text-espresso">{category.name}</h3>
               <div className="flex gap-2">
-                <details className="relative">
-                  <summary className="cursor-pointer list-none rounded-lg border border-cardline px-3 py-1.5 text-xs font-medium text-espresso-light hover:bg-cream-dark">
-                    Kategoriyi Düzenle
-                  </summary>
-                  <div className="absolute right-0 z-10 mt-2 w-64 rounded-xl border border-cardline bg-cream p-4 shadow-lg">
-                    <form action={updateCategoryAction} className="space-y-2">
-                      <input type="hidden" name="id" value={category.id} />
-                      <input
-                        name="name"
-                        defaultValue={category.name}
-                        required
-                        className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                      />
-                      <button
-                        type="submit"
-                        className="w-full rounded-lg bg-espresso px-3 py-1.5 text-sm font-semibold text-cream hover:bg-espresso-light"
-                      >
-                        Kaydet
-                      </button>
-                    </form>
-                  </div>
-                </details>
+                <EditModal
+                  trigger="Kategoriyi Düzenle"
+                  title="Kategoriyi Düzenle"
+                  action={updateCategoryAction}
+                >
+                  <input type="hidden" name="id" value={category.id} />
+                  <input
+                    name="name"
+                    defaultValue={category.name}
+                    required
+                    className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                  />
+                </EditModal>
                 <form action={deleteCategoryAction}>
                   <input type="hidden" name="id" value={category.id} />
                   <button
@@ -101,59 +94,41 @@ export default async function AdminMenuPage() {
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <details className="relative">
-                      <summary className="cursor-pointer list-none rounded-lg border border-cardline px-3 py-1.5 text-xs font-medium text-espresso-light hover:bg-cream-dark">
-                        Düzenle
-                      </summary>
-                      <div className="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-cardline bg-cream p-4 shadow-lg">
-                        <form action={updateItemAction} className="space-y-2">
-                          <input type="hidden" name="id" value={item.id} />
-                          <input
-                            name="name"
-                            defaultValue={item.name}
-                            required
-                            className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                            placeholder="Ürün adı"
-                          />
-                          <textarea
-                            name="description"
-                            defaultValue={item.description ?? ""}
-                            className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                            placeholder="Açıklama"
-                            rows={2}
-                          />
-                          <input
-                            name="price"
-                            type="number"
-                            step="0.01"
-                            defaultValue={item.price}
-                            required
-                            className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                            placeholder="Fiyat"
-                          />
-                          <input
-                            name="image"
-                            type="file"
-                            accept="image/*"
-                            className="w-full text-xs text-espresso-light"
-                          />
-                          <label className="flex items-center gap-2 text-sm text-espresso">
-                            <input
-                              type="checkbox"
-                              name="isAvailable"
-                              defaultChecked={item.isAvailable}
-                            />
-                            Stokta / satışta
-                          </label>
-                          <button
-                            type="submit"
-                            className="w-full rounded-lg bg-espresso px-3 py-1.5 text-sm font-semibold text-cream hover:bg-espresso-light"
-                          >
-                            Kaydet
-                          </button>
-                        </form>
-                      </div>
-                    </details>
+                    <EditModal trigger="Düzenle" title="Ürünü Düzenle" action={updateItemAction}>
+                      <input type="hidden" name="id" value={item.id} />
+                      <input
+                        name="name"
+                        defaultValue={item.name}
+                        required
+                        className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                        placeholder="Ürün adı"
+                      />
+                      <textarea
+                        name="description"
+                        defaultValue={item.description ?? ""}
+                        className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                        placeholder="Açıklama"
+                        rows={2}
+                      />
+                      <input
+                        name="price"
+                        type="number"
+                        step="0.01"
+                        defaultValue={item.price}
+                        required
+                        className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                        placeholder="Fiyat"
+                      />
+                      <ImageCropField name="image" label="Ürün Görseli" initialImageUrl={item.imageUrl} />
+                      <label className="flex items-center gap-2 text-sm text-espresso">
+                        <input
+                          type="checkbox"
+                          name="isAvailable"
+                          defaultChecked={item.isAvailable}
+                        />
+                        Stokta / satışta
+                      </label>
+                    </EditModal>
                     <form action={deleteItemAction}>
                       <input type="hidden" name="id" value={item.id} />
                       <input type="hidden" name="imageUrl" value={item.imageUrl ?? ""} />
@@ -198,12 +173,9 @@ export default async function AdminMenuPage() {
                   className="sm:col-span-2 rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
                   rows={2}
                 />
-                <input
-                  name="image"
-                  type="file"
-                  accept="image/*"
-                  className="sm:col-span-2 text-xs text-espresso-light"
-                />
+                <div className="sm:col-span-2">
+                  <ImageCropField name="image" label="Ürün Görseli (opsiyonel)" />
+                </div>
                 <label className="flex items-center gap-2 text-sm text-espresso">
                   <input type="checkbox" name="isAvailable" defaultChecked />
                   Stokta / satışta

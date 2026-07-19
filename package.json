@@ -2,13 +2,13 @@
   "name": "cofengo",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-  "dev": "next dev",
-  "build": "next build --webpack",
-  "start": "next start",
-  "lint": "eslint",
-  "seed": "node scripts/seed.mjs"
-},
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint",
+    "seed": "node scripts/seed.mjs"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",

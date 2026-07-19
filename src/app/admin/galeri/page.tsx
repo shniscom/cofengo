@@ -1,6 +1,7 @@
 import AdminShell from "@/components/admin/AdminShell";
 import { getGalleryImages } from "@/lib/data";
 import ImageOrPlaceholder from "@/components/site/ImageOrPlaceholder";
+import ImageCropField from "@/components/admin/ImageCropField";
 import { uploadGalleryImageAction, deleteGalleryImageAction } from "./actions";
 
 export default async function AdminGalleryPage() {
@@ -14,18 +15,12 @@ export default async function AdminGalleryPage() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-espresso-light">
           Fotoğraf Yükle
         </h2>
-        <form action={uploadGalleryImageAction} className="mt-3 flex flex-wrap gap-3">
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            required
-            className="text-sm text-espresso-light"
-          />
+        <form action={uploadGalleryImageAction} className="mt-3 space-y-3">
+          <ImageCropField name="image" label="Fotoğraf" />
           <input
             name="caption"
             placeholder="Açıklama (opsiyonel)"
-            className="flex-1 min-w-[160px] rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+            className="w-full max-w-sm rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
           />
           <button
             type="submit"

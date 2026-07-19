@@ -1,4 +1,6 @@
 import AdminShell from "@/components/admin/AdminShell";
+import EditModal from "@/components/admin/EditModal";
+import ImageCropField from "@/components/admin/ImageCropField";
 import { getEvents } from "@/lib/data";
 import { createEventAction, updateEventAction, deleteEventAction } from "./actions";
 
@@ -50,12 +52,9 @@ export default async function AdminEventsPage() {
             rows={2}
             className="sm:col-span-2 rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
           />
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            className="sm:col-span-2 text-xs text-espresso-light"
-          />
+          <div className="sm:col-span-2">
+            <ImageCropField name="image" label="Etkinlik Görseli (opsiyonel)" aspect={4 / 3} />
+          </div>
           <label className="flex items-center gap-2 text-sm text-espresso">
             <input type="checkbox" name="isPublished" defaultChecked />
             Sitede yayınla
@@ -90,51 +89,38 @@ export default async function AdminEventsPage() {
               )}
             </div>
             <div className="flex gap-2">
-              <details className="relative">
-                <summary className="cursor-pointer list-none rounded-lg border border-cardline px-3 py-1.5 text-xs font-medium text-espresso-light hover:bg-cream-dark">
-                  Düzenle
-                </summary>
-                <div className="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-cardline bg-cream p-4 shadow-lg">
-                  <form action={updateEventAction} className="space-y-2">
-                    <input type="hidden" name="id" value={event.id} />
-                    <input
-                      name="title"
-                      defaultValue={event.title}
-                      required
-                      className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                    />
-                    <input
-                      name="eventDate"
-                      type="datetime-local"
-                      defaultValue={toDatetimeLocal(event.eventDate)}
-                      required
-                      className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                    />
-                    <textarea
-                      name="description"
-                      defaultValue={event.description ?? ""}
-                      rows={2}
-                      className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
-                    />
-                    <input
-                      name="image"
-                      type="file"
-                      accept="image/*"
-                      className="w-full text-xs text-espresso-light"
-                    />
-                    <label className="flex items-center gap-2 text-sm text-espresso">
-                      <input type="checkbox" name="isPublished" defaultChecked={event.isPublished} />
-                      Sitede yayınla
-                    </label>
-                    <button
-                      type="submit"
-                      className="w-full rounded-lg bg-espresso px-3 py-1.5 text-sm font-semibold text-cream hover:bg-espresso-light"
-                    >
-                      Kaydet
-                    </button>
-                  </form>
-                </div>
-              </details>
+              <EditModal trigger="Düzenle" title="Etkinliği Düzenle" action={updateEventAction}>
+                <input type="hidden" name="id" value={event.id} />
+                <input
+                  name="title"
+                  defaultValue={event.title}
+                  required
+                  className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                />
+                <input
+                  name="eventDate"
+                  type="datetime-local"
+                  defaultValue={toDatetimeLocal(event.eventDate)}
+                  required
+                  className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                />
+                <textarea
+                  name="description"
+                  defaultValue={event.description ?? ""}
+                  rows={2}
+                  className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                />
+                <ImageCropField
+                  name="image"
+                  label="Etkinlik Görseli"
+                  initialImageUrl={event.imageUrl}
+                  aspect={4 / 3}
+                />
+                <label className="flex items-center gap-2 text-sm text-espresso">
+                  <input type="checkbox" name="isPublished" defaultChecked={event.isPublished} />
+                  Sitede yayınla
+                </label>
+              </EditModal>
               <form action={deleteEventAction}>
                 <input type="hidden" name="id" value={event.id} />
                 <input type="hidden" name="imageUrl" value={event.imageUrl ?? ""} />
