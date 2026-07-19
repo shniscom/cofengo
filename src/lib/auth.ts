@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-import bcrypt from "bcryptjs";
+import { timingSafeEqual } from "node:crypto";
 
 export const SESSION_COOKIE_NAME = "cofengo_admin_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 gun
@@ -36,17 +36,27 @@ export async function verifySessionToken(
   }
 }
 
+function safeStringEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) {
+    timingSafeEqual(bufA, bufA);
+    return false;
+  }
+  return timingSafeEqual(bufA, bufB);
+}
+
 export function checkCredentials(username: string, password: string): boolean {
   const expectedUsername = process.env.ADMIN_USERNAME;
-  const expectedHash = process.env.ADMIN_PASSWORD_HASH;
+  const expectedPassword = process.env.ADMIN_PASSWORD;
 
-  if (!expectedUsername || !expectedHash) {
+  if (!expectedUsername || !expectedPassword) {
     return false;
   }
-  if (username !== expectedUsername) {
-    return false;
-  }
-  return bcrypt.compareSync(password, expectedHash);
+
+  const usernameOk = safeStringEqual(username, expectedUsername);
+  const passwordOk = safeStringEqual(password, expectedPassword);
+  return usernameOk && passwordOk;
 }
 
 export const SESSION_MAX_AGE = SESSION_DURATION_SECONDS;
