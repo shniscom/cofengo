@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Cofengo - şehrin kalbinde sıcacık bir mola noktası. Menümüzü, etkinliklerimizi keşfedin ve bize ulaşın.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
