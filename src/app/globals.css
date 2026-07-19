@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --color-cream: #faf5ee;
+  --color-cream-dark: #f0e6d8;
+  --color-espresso: #3b2a20;
+  --color-espresso-light: #5a4232;
+  --color-coffee: #7a5233;
+  --color-caramel: #c1854a;
+  --color-caramel-dark: #a86a34;
+  --color-sage: #6f7d5e;
+  --color-cardline: #e7dbc9;
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-cream-dark: var(--color-cream-dark);
+  --color-espresso: var(--color-espresso);
+  --color-espresso-light: var(--color-espresso-light);
+  --color-coffee: var(--color-coffee);
+  --color-caramel: var(--color-caramel);
+  --color-caramel-dark: var(--color-caramel-dark);
+  --color-sage: var(--color-sage);
+  --color-cardline: var(--color-cardline);
+  --font-serif-display: Georgia, "Times New Roman", Times, serif;
+  --font-sans-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-espresso);
+  font-family: var(--font-sans-body);
+}
+
+.font-display {
+  font-family: var(--font-serif-display);
+}
