@@ -49,6 +49,8 @@ export async function updateEventAction(formData: FormData) {
   const dateRaw = String(formData.get("eventDate") ?? "");
   const isPublished = formData.get("isPublished") === "on";
   const imageFile = formData.get("image");
+  const removeImage = formData.get("imageRemove") === "1";
+  const currentImageUrl = String(formData.get("currentImageUrl") ?? "");
 
   const eventDate = toIsoDate(dateRaw);
   if (!id || !title || !eventDate) return;
@@ -62,6 +64,10 @@ export async function updateEventAction(formData: FormData) {
 
   if (imageFile instanceof File && imageFile.size > 0) {
     update.imageUrl = await saveUploadedImage(imageFile);
+    if (currentImageUrl) await deleteUploadedImage(currentImageUrl);
+  } else if (removeImage) {
+    update.imageUrl = null;
+    if (currentImageUrl) await deleteUploadedImage(currentImageUrl);
   }
 
   updateEvent(id, update);
