@@ -41,6 +41,7 @@ function runMigrations(db: DatabaseSync) {
       description TEXT,
       price REAL NOT NULL,
       image_url TEXT,
+      allergens TEXT,
       is_available INTEGER NOT NULL DEFAULT 1,
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
@@ -83,6 +84,14 @@ function runMigrations(db: DatabaseSync) {
       map_embed_url TEXT NOT NULL DEFAULT ''
     );
   `);
+
+  const menuItemColumns = db
+    .prepare("PRAGMA table_info(menu_items)")
+    .all() as { name: string }[];
+  const hasAllergensColumn = menuItemColumns.some((col) => col.name === "allergens");
+  if (!hasAllergensColumn) {
+    db.exec("ALTER TABLE menu_items ADD COLUMN allergens TEXT;");
+  }
 
   const existingSettings = db
     .prepare("SELECT id FROM site_settings WHERE id = ?")
