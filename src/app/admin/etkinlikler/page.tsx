@@ -91,6 +91,7 @@ export default async function AdminEventsPage() {
             <div className="flex gap-2">
               <EditModal trigger="Düzenle" title="Etkinliği Düzenle" action={updateEventAction}>
                 <input type="hidden" name="id" value={event.id} />
+                <input type="hidden" name="currentImageUrl" value={event.imageUrl ?? ""} />
                 <input
                   name="title"
                   defaultValue={event.title}
