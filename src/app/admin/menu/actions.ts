@@ -80,6 +80,8 @@ export async function updateItemAction(formData: FormData) {
   const price = Number(priceRaw.replace(",", "."));
   const isAvailable = formData.get("isAvailable") === "on";
   const imageFile = formData.get("image");
+  const removeImage = formData.get("imageRemove") === "1";
+  const currentImageUrl = String(formData.get("currentImageUrl") ?? "");
 
   if (!id || !name || Number.isNaN(price)) return;
 
@@ -93,6 +95,10 @@ export async function updateItemAction(formData: FormData) {
 
   if (imageFile instanceof File && imageFile.size > 0) {
     update.imageUrl = await saveUploadedImage(imageFile);
+    if (currentImageUrl) await deleteUploadedImage(currentImageUrl);
+  } else if (removeImage) {
+    update.imageUrl = null;
+    if (currentImageUrl) await deleteUploadedImage(currentImageUrl);
   }
 
   updateMenuItem(id, update);
