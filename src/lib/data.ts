@@ -22,6 +22,7 @@ export type MenuItem = {
   description: string | null;
   price: number;
   imageUrl: string | null;
+  allergens: string | null;
   isAvailable: boolean;
   sortOrder: number;
   createdAt: string;
@@ -85,6 +86,7 @@ function mapItem(row: Record<string, unknown>): MenuItem {
     description: (row.description as string) ?? null,
     price: Number(row.price),
     imageUrl: (row.image_url as string) ?? null,
+    allergens: (row.allergens as string) ?? null,
     isAvailable: Number(row.is_available) === 1,
     sortOrder: Number(row.sort_order),
     createdAt: row.created_at as string,
@@ -195,6 +197,7 @@ export function createMenuItem(data: {
   description?: string;
   price: number;
   imageUrl?: string;
+  allergens?: string;
   isAvailable?: boolean;
   sortOrder?: number;
 }): MenuItem {
@@ -203,8 +206,8 @@ export function createMenuItem(data: {
   const ts = now();
   db.prepare(
     `INSERT INTO menu_items
-      (id, category_id, name, description, price, image_url, is_available, sort_order, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      (id, category_id, name, description, price, image_url, allergens, is_available, sort_order, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     data.categoryId,
@@ -212,6 +215,7 @@ export function createMenuItem(data: {
     data.description ?? null,
     data.price,
     data.imageUrl ?? null,
+    data.allergens ?? null,
     data.isAvailable === false ? 0 : 1,
     data.sortOrder ?? 0,
     ts,
@@ -224,6 +228,7 @@ export function createMenuItem(data: {
     description: data.description ?? null,
     price: data.price,
     imageUrl: data.imageUrl ?? null,
+    allergens: data.allergens ?? null,
     isAvailable: data.isAvailable !== false,
     sortOrder: data.sortOrder ?? 0,
     createdAt: ts,
@@ -239,6 +244,7 @@ export function updateMenuItem(
     description: string | null;
     price: number;
     imageUrl: string | null;
+    allergens: string | null;
     isAvailable: boolean;
     sortOrder: number;
   }>
@@ -256,6 +262,8 @@ export function updateMenuItem(
       data.description !== undefined ? data.description : (current.description as string | null),
     price: data.price ?? Number(current.price),
     imageUrl: data.imageUrl !== undefined ? data.imageUrl : (current.image_url as string | null),
+    allergens:
+      data.allergens !== undefined ? data.allergens : (current.allergens as string | null),
     isAvailable:
       data.isAvailable !== undefined ? data.isAvailable : Number(current.is_available) === 1,
     sortOrder: data.sortOrder ?? Number(current.sort_order),
@@ -263,7 +271,7 @@ export function updateMenuItem(
 
   db.prepare(
     `UPDATE menu_items SET
-      category_id = ?, name = ?, description = ?, price = ?, image_url = ?,
+      category_id = ?, name = ?, description = ?, price = ?, image_url = ?, allergens = ?,
       is_available = ?, sort_order = ?, updated_at = ?
      WHERE id = ?`
   ).run(
@@ -272,6 +280,7 @@ export function updateMenuItem(
     merged.description,
     merged.price,
     merged.imageUrl,
+    merged.allergens,
     merged.isAvailable ? 1 : 0,
     merged.sortOrder,
     now(),
