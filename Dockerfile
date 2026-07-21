@@ -10,10 +10,16 @@ RUN npm install --no-audit --no-fund
 # ---- 2) Uygulamayi derle ----
 FROM node:22-alpine AS builder
 WORKDIR /app
-ENV NODE_ENV=development
+# ONEMLI: Burada NODE_ENV=development SET ETME. next build kendi icinde
+# NODE_ENV'i production yapar; eger biz burada development olarak zorlarsak
+# Next.js 16'da bilinen bir bug yuzunden /_global-error sayfasi prerender
+# asamasinda "Cannot read properties of null (reading 'useContext')" /
+# "Expected workUnitAsyncStorage to have a store" hatasiyla build cokuyor.
+# (bkz. vercel/next.js issue #86178 ve #87719). node_modules zaten deps
+# asamasindan kopyalandigi icin burada tekrar npm install gerekmiyor,
+# dolayisiyla NODE_ENV=development'a hic ihtiyac yok.
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Build sirasinda gercek bir DATABASE_PATH gerekmiyor, sadece derleme yapiliyor
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
