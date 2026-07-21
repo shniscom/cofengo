@@ -92,6 +92,9 @@ export default async function AdminMenuPage() {
                     {item.description && (
                       <p className="text-sm text-espresso-light">{item.description}</p>
                     )}
+                    {item.allergens && (
+                      <p className="text-xs text-espresso-light/80">Alerjen: {item.allergens}</p>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <EditModal trigger="Düzenle" title="Ürünü Düzenle" action={updateItemAction}>
@@ -109,6 +112,12 @@ export default async function AdminMenuPage() {
                         className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
                         placeholder="Açıklama"
                         rows={2}
+                      />
+                      <input
+                        name="allergens"
+                        defaultValue={item.allergens ?? ""}
+                        className="w-full rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
+                        placeholder="Alerjenler (örn. Gluten, Süt, Fındık)"
                       />
                       <input
                         name="price"
@@ -172,6 +181,11 @@ export default async function AdminMenuPage() {
                   placeholder="Açıklama (opsiyonel)"
                   className="sm:col-span-2 rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
                   rows={2}
+                />
+                <input
+                  name="allergens"
+                  placeholder="Alerjenler (opsiyonel, örn. Gluten, Süt, Fındık)"
+                  className="sm:col-span-2 rounded-lg border border-cardline bg-cream px-3 py-2 text-sm text-espresso"
                 />
                 <div className="sm:col-span-2">
                   <ImageCropField name="image" label="Ürün Görseli (opsiyonel)" />
