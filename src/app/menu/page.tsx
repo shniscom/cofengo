@@ -35,10 +35,10 @@ export default async function MenuPage() {
             <h2 className="font-display border-b border-cardline pb-3 text-2xl font-bold text-espresso">
               {category.name}
             </h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+            <div className="mt-6 mx-auto max-w-2xl space-y-5">
               {category.items.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="relative h-20 w-20 flex-none overflow-hidden rounded-xl">
+                <div key={item.id} className="flex gap-5">
+                  <div className="relative h-28 w-28 flex-none overflow-hidden rounded-xl">
                     <ImageOrPlaceholder src={item.imageUrl} alt={item.name} />
                   </div>
                   <div className="flex-1">
@@ -57,6 +57,11 @@ export default async function MenuPage() {
                     </div>
                     {item.description && (
                       <p className="mt-1 text-sm text-espresso-light">{item.description}</p>
+                    )}
+                    {item.allergens && (
+                      <p className="mt-1 text-xs italic text-espresso-light/80">
+                        Alerjen: {item.allergens}
+                      </p>
                     )}
                   </div>
                 </div>
