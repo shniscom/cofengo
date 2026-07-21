@@ -46,6 +46,7 @@ export async function createItemAction(formData: FormData) {
   const categoryId = String(formData.get("categoryId") ?? "");
   const name = String(formData.get("name") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const allergens = String(formData.get("allergens") ?? "").trim();
   const priceRaw = String(formData.get("price") ?? "");
   const price = Number(priceRaw.replace(",", "."));
   const isAvailable = formData.get("isAvailable") === "on";
@@ -64,6 +65,7 @@ export async function createItemAction(formData: FormData) {
     description: description || undefined,
     price,
     imageUrl,
+    allergens: allergens || undefined,
     isAvailable,
   });
   revalidateMenuPaths();
@@ -73,6 +75,7 @@ export async function updateItemAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const name = String(formData.get("name") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const allergens = String(formData.get("allergens") ?? "").trim();
   const priceRaw = String(formData.get("price") ?? "");
   const price = Number(priceRaw.replace(",", "."));
   const isAvailable = formData.get("isAvailable") === "on";
@@ -84,6 +87,7 @@ export async function updateItemAction(formData: FormData) {
     name,
     description: description || null,
     price,
+    allergens: allergens || null,
     isAvailable,
   };
 
