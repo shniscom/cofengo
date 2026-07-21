@@ -99,6 +99,7 @@ export default async function AdminMenuPage() {
                   <div className="flex gap-2">
                     <EditModal trigger="Düzenle" title="Ürünü Düzenle" action={updateItemAction}>
                       <input type="hidden" name="id" value={item.id} />
+                      <input type="hidden" name="currentImageUrl" value={item.imageUrl ?? ""} />
                       <input
                         name="name"
                         defaultValue={item.name}
