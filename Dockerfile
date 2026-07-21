@@ -5,7 +5,7 @@ WORKDIR /app
 # (typescript, tailwind, eslint) kurulmali - build bunlara ihtiyac duyuyor.
 ENV NODE_ENV=development
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 
 # ---- 2) Uygulamayi derle ----
 FROM node:22-alpine AS builder
