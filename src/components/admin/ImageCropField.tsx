@@ -18,10 +18,10 @@ export default function ImageCropField({
   const inputId = useId();
   const rawFileInputRef = useRef<HTMLInputElement>(null);
   const outputFileInputRef = useRef<HTMLInputElement>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const [rawSrc, setRawSrc] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [removeRequested, setRemoveRequested] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<PixelCrop | null>(null);
@@ -40,7 +40,6 @@ export default function ImageCropField({
       setCrop({ x: 0, y: 0 });
       setZoom(1);
       setCroppedAreaPixels(null);
-      dialogRef.current?.showModal();
     };
     reader.readAsDataURL(file);
     // Ayni dosyayi tekrar secebilmek icin input'u sifirla
@@ -52,7 +51,6 @@ export default function ImageCropField({
   }, []);
 
   const handleCancelCrop = () => {
-    dialogRef.current?.close();
     setRawSrc(null);
   };
 
@@ -70,7 +68,7 @@ export default function ImageCropField({
       }
 
       setPreviewUrl(URL.createObjectURL(blob));
-      dialogRef.current?.close();
+      setRemoveRequested(false);
       setRawSrc(null);
     } catch {
       // sessizce yut, kullanici tekrar deneyebilir
@@ -79,7 +77,16 @@ export default function ImageCropField({
     }
   };
 
-  const displayUrl = previewUrl ?? initialImageUrl;
+  const handleRemove = () => {
+    setPreviewUrl(null);
+    setRemoveRequested(true);
+    setRawSrc(null);
+    if (outputFileInputRef.current) {
+      outputFileInputRef.current.value = "";
+    }
+  };
+
+  const displayUrl = removeRequested ? null : previewUrl ?? initialImageUrl;
 
   return (
     <div>
@@ -103,14 +110,25 @@ export default function ImageCropField({
             </div>
           )}
         </div>
-        <button
-          type="button"
-          id={inputId}
-          onClick={handlePickClick}
-          className="rounded-lg border border-cardline px-3 py-1.5 text-xs font-medium text-espresso hover:bg-cream-dark"
-        >
-          {displayUrl ? "Fotoğrafı Değiştir" : "Fotoğraf Seç"}
-        </button>
+        <div className="flex flex-col items-start gap-1.5">
+          <button
+            type="button"
+            id={inputId}
+            onClick={handlePickClick}
+            className="rounded-lg border border-cardline px-3 py-1.5 text-xs font-medium text-espresso hover:bg-cream-dark"
+          >
+            {displayUrl ? "Fotoğrafı Değiştir" : "Fotoğraf Seç"}
+          </button>
+          {displayUrl && (
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="text-xs font-medium text-red-600 hover:underline"
+            >
+              Fotoğrafı Kaldır
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Gercek dosya secici, gizli */}
@@ -123,33 +141,28 @@ export default function ImageCropField({
       />
       {/* Forma submit edilecek asil dosya - kirpma sonrasi JS ile dolduruluyor */}
       <input ref={outputFileInputRef} type="file" name={name} className="hidden" />
+      {/* Kullanici fotografi kaldirmak istedigini belirtti */}
+      {removeRequested && <input type="hidden" name={`${name}Remove`} value="1" />}
 
-      <dialog
-        ref={dialogRef}
-        onClick={(e) => {
-          if (e.target === dialogRef.current) handleCancelCrop();
-        }}
-        className="w-full max-w-lg rounded-2xl border border-cardline bg-cream p-0 backdrop:bg-espresso/50"
-      >
-        <div className="p-4">
-          <h3 className="font-display text-lg font-bold text-espresso">Görseli Kırp</h3>
-          <p className="mt-1 text-xs text-espresso-light">
+      {/* Kirpma arayuzu - EditModal icindeki ic ice modal (dialog-in-dialog)
+          sorunlarindan kacinmak icin ayri bir <dialog> yerine formun icinde
+          acilan bir panel olarak gosteriliyor. */}
+      {rawSrc && (
+        <div className="mt-3 rounded-xl border border-cardline bg-cream-dark/40 p-3">
+          <p className="text-xs text-espresso-light">
             Görseli sürükleyip yakınlaştırarak kırpma alanını ayarlayın.
           </p>
-
-          {rawSrc && (
-            <div className="relative mt-3 h-72 w-full overflow-hidden rounded-xl bg-espresso/10">
-              <Cropper
-                image={rawSrc}
-                crop={crop}
-                zoom={zoom}
-                aspect={aspect}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={onCropComplete}
-              />
-            </div>
-          )}
+          <div className="relative mt-2 h-64 w-full overflow-hidden rounded-xl bg-espresso/10">
+            <Cropper
+              image={rawSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={aspect}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+          </div>
 
           <div className="mt-3 flex items-center gap-3">
             <span className="text-xs text-espresso-light">Yakınlaştır</span>
@@ -164,7 +177,7 @@ export default function ImageCropField({
             />
           </div>
 
-          <div className="mt-4 flex justify-end gap-2">
+          <div className="mt-3 flex justify-end gap-2">
             <button
               type="button"
               onClick={handleCancelCrop}
@@ -182,7 +195,7 @@ export default function ImageCropField({
             </button>
           </div>
         </div>
-      </dialog>
+      )}
     </div>
   );
 }
