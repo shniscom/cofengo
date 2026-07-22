@@ -93,6 +93,22 @@ function runMigrations(db: DatabaseSync) {
     db.exec("ALTER TABLE menu_items ADD COLUMN allergens TEXT;");
   }
 
+  // Eski surumlerde gorsel URL'leri "/uploads/..." seklindeydi; artik
+  // "/media/[filename]" route'u uzerinden sunuluyorlar. Var olan kayitlari
+  // yeni onekle guncelliyoruz.
+  db.exec(
+    `UPDATE menu_items SET image_url = '/media/' || substr(image_url, 10)
+     WHERE image_url LIKE '/uploads/%';`
+  );
+  db.exec(
+    `UPDATE events SET image_url = '/media/' || substr(image_url, 10)
+     WHERE image_url LIKE '/uploads/%';`
+  );
+  db.exec(
+    `UPDATE gallery_images SET image_url = '/media/' || substr(image_url, 10)
+     WHERE image_url LIKE '/uploads/%';`
+  );
+
   const existingSettings = db
     .prepare("SELECT id FROM site_settings WHERE id = ?")
     .get("singleton");
