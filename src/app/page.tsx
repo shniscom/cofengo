@@ -25,7 +25,7 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="border-b border-cardline bg-gradient-to-b from-cream-dark to-cream px-6 py-24 text-center">
+      <section className="border-b border-cardline bg-gradient-to-b from-cream-dark to-cream px-6 py-16 text-center md:py-24">
         <h1 className="font-display mx-auto max-w-3xl text-4xl font-bold leading-tight text-espresso md:text-5xl">
           {settings.heroTitle}
         </h1>

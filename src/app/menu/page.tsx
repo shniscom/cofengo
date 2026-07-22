@@ -29,9 +29,26 @@ export default async function MenuPage() {
         </p>
       )}
 
+      {categories.length > 1 && (
+        <nav
+          aria-label="Kategoriler"
+          className="sticky top-16 z-30 -mx-6 mt-8 flex gap-2 overflow-x-auto border-y border-cardline bg-cream/95 px-6 py-3 backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {categories.map((category) => (
+            <a
+              key={category.id}
+              href={`#kategori-${category.id}`}
+              className="flex-none whitespace-nowrap rounded-full border border-cardline px-4 py-1.5 text-sm font-medium text-espresso-light transition-colors hover:border-caramel hover:text-caramel-dark"
+            >
+              {category.name}
+            </a>
+          ))}
+        </nav>
+      )}
+
       <div className="mt-12 space-y-14">
         {categories.map((category) => (
-          <section key={category.id}>
+          <section key={category.id} id={`kategori-${category.id}`} className="scroll-mt-36">
             <h2 className="font-display border-b border-cardline pb-3 text-2xl font-bold text-espresso">
               {category.name}
             </h2>

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     "Cofengo - şehrin kalbinde sıcacık bir mola noktası. Menümüzü, etkinliklerimizi keşfedin ve bize ulaşın.",
 };
 
+// Tum site SQLite veritabanindan okuyor (menu, etkinlik, ayarlar v.b.).
+// Sayfalarin build anindaki verimi degil, her istekte GUNCEL veriyi
+// gostermesi icin statik on-uretimi (static prerendering) devre disi
+// birakiyoruz - aksi halde admin panelden yapilan degisiklikler siteye
+// ancak yeni bir "npm run build" ile yansirdi.
 export const dynamic = "force-dynamic";
 
 export default function RootLayout({
@@ -18,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="h-full antialiased">
+    <html lang="tr" className="h-full scroll-smooth antialiased">
       <body className="flex min-h-full flex-col bg-cream text-espresso">
         <Header />
         <main className="flex-1">{children}</main>
