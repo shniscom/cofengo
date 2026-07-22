@@ -31,12 +31,25 @@ export async function saveUploadedImage(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   await fs.writeFile(filePath, buffer);
 
-  return `/uploads/${filename}`;
+  // Not: gorseller "public/uploads" altina yaziliyor ama URL olarak
+  // "/media/<dosya>" donduruluyor. Next.js standalone modda "public"
+  // klasorune runtime'da eklenen dosyalar bazen statik sunucu tarafindan
+  // bulunamiyordu (404); "/media/[filename]" route'u dosyayi dogrudan
+  // diskten okuyarak sunuyor, bu sorunu ortadan kaldiriyor.
+  return `/media/${filename}`;
 }
 
 export async function deleteUploadedImage(imageUrl: string | null) {
-  if (!imageUrl || !imageUrl.startsWith("/uploads/")) return;
-  const filePath = path.join(process.cwd(), "public", imageUrl);
+  if (!imageUrl) return;
+  let filename: string | null = null;
+  if (imageUrl.startsWith("/media/")) {
+    filename = imageUrl.slice("/media/".length);
+  } else if (imageUrl.startsWith("/uploads/")) {
+    filename = imageUrl.slice("/uploads/".length);
+  }
+  if (!filename || filename.includes("/") || filename.includes("..")) return;
+
+  const filePath = path.join(UPLOADS_DIR, filename);
   try {
     await fs.unlink(filePath);
   } catch {
